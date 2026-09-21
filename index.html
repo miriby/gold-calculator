@@ -1,0 +1,549 @@
+<title>מחשבון משקל ומחיר</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAF6F1;
+    --card: #FFFFFF;
+    --sand: #DBCABC;
+    --blush: #D9BFB5;
+    --seafoam: #8AB3A7;
+    --teal-deep: #46827D;
+    --ink: #254D51;
+    --gold: #C5AD6C;
+    --line: #E7DED4;
+    --text-muted: #6B7A79;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #16211F;
+      --card: #1D2C2A;
+      --sand: #3A332C;
+      --blush: #3A2E2A;
+      --seafoam: #7BA79B;
+      --teal-deep: #6FB3AA;
+      --ink: #EDEAE4;
+      --gold: #D4BE85;
+      --line: #33413E;
+      --text-muted: #9BAEAC;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #16211F;
+    --card: #1D2C2A;
+    --sand: #3A332C;
+    --blush: #3A2E2A;
+    --seafoam: #7BA79B;
+    --teal-deep: #6FB3AA;
+    --ink: #EDEAE4;
+    --gold: #D4BE85;
+    --line: #33413E;
+    --text-muted: #9BAEAC;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding-inline: 16px;
+  }
+  .page{
+    max-width: 640px;
+    margin: 0 auto;
+    padding-block: 36px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  header{ text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .logo-mark{
+    display: block;
+    width: 108px;
+    height: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.06));
+  }
+  .brand-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--ink);
+  }
+  .brand-tagline{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  h1{
+    font-family: 'Segoe UI Semilight', 'Segoe UI', 'Segoe UI Historic', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    font-size: clamp(22px, 4.5vw, 26px);
+    color: var(--text-muted);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card-head{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .step-num{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+  .card-head h2{
+    font-family: 'Segoe UI Semilight', 'Segoe UI', 'Segoe UI Historic', system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    font-size: 21px;
+    color: var(--teal-deep);
+    margin: 0;
+  }
+  .card-head .hint{
+    margin-inline-start: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  label{
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .field{ display: flex; flex-direction: column; }
+  .row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 480px){
+    .row{ grid-template-columns: 1fr; }
+  }
+
+  input[type="number"], select{
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 12px;
+    appearance: none;
+  }
+  select{
+    background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+    background-position: calc(1em) calc(1.15em), calc(1em + 5px) calc(1.15em);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-inline-start: 28px;
+  }
+  input:focus, select:focus{
+    outline: none;
+    border-color: var(--seafoam);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--seafoam) 25%, transparent);
+  }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{
+    opacity: 1;
+  }
+
+  .price-row{ display: flex; gap: 8px; }
+  .price-row input{ flex: 1; }
+  .fetch-btn{
+    flex-shrink: 0;
+    width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--teal-deep);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .fetch-btn:hover{ border-color: var(--seafoam); }
+  .fetch-btn:disabled{ opacity: 0.5; cursor: default; }
+  .fetch-btn .spin{ display: inline-block; }
+  .fetch-btn.loading .spin{ animation: spin 0.8s linear infinite; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .rate-status{
+    font-size: 11.5px;
+    color: var(--seafoam);
+    margin: -6px 0 0;
+    min-height: 14px;
+  }
+  .rate-status.error{ color: #B5654F; }
+
+  .rates-panel{
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .rates-title{
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .rates-asof{
+    font-size: 12px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .rates-grid{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 7px 12px;
+    font-size: 13px;
+  }
+  .rates-grid span:nth-child(odd){ color: var(--text-muted); }
+  .rates-grid span:nth-child(even){
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .result{
+    margin-top: 4px;
+    border-top: 1px dashed var(--line);
+    padding-top: 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .result .label{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    margin: 0;
+  }
+  .result .value{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 30px;
+    color: var(--teal-deep);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .result .value .unit{
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-muted);
+    margin-inline-start: 4px;
+  }
+  .result.final .value{ color: var(--gold); }
+
+  .source-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--teal-deep);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--teal-deep) 40%, transparent);
+    width: fit-content;
+  }
+  .source-link:hover{ border-color: var(--teal-deep); }
+
+  .note{
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .note.disclaimer{
+    font-style: italic;
+  }
+
+  footer{
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+
+<div class="page" dir="rtl" lang="he">
+
+  <header>
+    <img class="logo-mark" src="logo-mark.png" alt="Miri Grushka emblem" />
+    <div class="brand-name">Miri Grushka</div>
+    <div class="brand-tagline">Fine Jewelry</div>
+    <h1>מחשבון משקל ומחיר תכשיט</h1>
+  </header>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="step-num">01</span>
+      <h2>משקל התכשיט</h2>
+      <span class="hint">נתון מריינו</span>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="volume">נפח (Volume, ממ״ק)</label>
+        <input type="number" id="volume" inputmode="decimal" step="any" min="0" placeholder="לדוגמה 850" />
+      </div>
+      <div class="field">
+        <label for="metal">סוג זהב</label>
+        <select id="metal"></select>
+      </div>
+    </div>
+
+    <div class="result">
+      <p class="label">משקל התכשיט</p>
+      <p class="value" id="gramsOut">—<span class="unit">גרם</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="step-num">02</span>
+      <h2>עלות מתכת גולמית</h2>
+      <span class="hint">לפי שער יומי</span>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="grams">משקל (גרם)</label>
+        <input type="number" id="grams" inputmode="decimal" step="any" min="0" placeholder="מתמלא משלב 1" />
+      </div>
+      <div class="field">
+        <label for="pricePerGram">מחיר לגרם באותו קראט (ש״ח)</label>
+        <div class="price-row">
+          <input type="number" id="pricePerGram" inputmode="decimal" step="any" min="0" placeholder="לדוגמה 420.50" />
+          <button type="button" id="fetchRateBtn" class="fetch-btn" title="משיכת שער זהב עדכני">
+            <span class="spin">⟳</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="rate-status" id="rateStatus"></p>
+
+    <a class="source-link" href="https://www.gbl.co.il/caratCalc" target="_blank" rel="noopener">
+      פתיחת מחשבון ברכת זהב להשוואה ↗
+    </a>
+    <p class="note">
+      הכפתור <strong>⟳</strong> מושך שער זהב ספוט ושער דולר/שקל עדכניים (ממקורות נתונים פתוחים) ומחשב לבד את המחיר לגרם לפי הקראט שנבחר למעלה. אלו שירותים חיצוניים חינמיים ללא מפתח - אם השליפה נכשלת או שנראה לך שהמספר לא מסתדר, אפשר תמיד להזין ידנית לפי מחשבון ברכת זהב.
+    </p>
+
+    <div class="rates-panel" id="ratesPanel" hidden>
+      <div class="rates-title">שערים שנמשכו</div>
+      <div class="rates-asof" id="ratesAsOf"></div>
+      <div class="rates-grid">
+        <span>אונקיה זהב (USD)</span><span id="rOz">—</span>
+        <span>גרם טהור 24K (USD)</span><span id="rGram24">—</span>
+        <span>גרם 18K · 750 (USD / ₪)</span><span id="r18">—</span>
+        <span>גרם 14K · 585 (USD / ₪)</span><span id="r14">—</span>
+        <span>דולר / שקל</span><span id="rFx">—</span>
+      </div>
+    </div>
+
+    <div class="result final">
+      <p class="label">עלות מתכת גולמית</p>
+      <p class="value" id="priceOut">—<span class="unit">₪</span></p>
+    </div>
+
+    <p class="note disclaimer">
+      זו הערכה בלבד לעלות המתכת, ולא מחיר סופי - בית יציקה בדרך כלל מחשב לפי שער יום היציקה בפועל (לא בהכרח יום ההזמנה), ולרוב מוסיף גם פרמיה/עמלה משלו.
+    </p>
+  </div>
+
+  <footer>המחיר המתקבל משקף עלות מתכת בלבד, ללא עבודה, אבנים או רווח</footer>
+</div>
+
+<script>
+(function(){
+  var METALS = [
+    { label: '18K צהוב · 750',  sg: 15.58, purity: 0.750 },
+    { label: '18K לבן · 750',   sg: 14.64, purity: 0.750 },
+    { label: '18K אדום · 750',  sg: 15.8,  purity: 0.750 },
+    { label: '14K צהוב · 585',  sg: 13.07, purity: 0.585 },
+    { label: '14K לבן · 585',   sg: 12.61, purity: 0.585 },
+    { label: '14K אדום · 585',  sg: 13.26, purity: 0.585 }
+  ];
+  var GRAMS_PER_TROY_OZ = 31.1034768;
+
+  var volumeEl = document.getElementById('volume');
+  var metalEl = document.getElementById('metal');
+  var gramsOutEl = document.getElementById('gramsOut');
+  var gramsEl = document.getElementById('grams');
+  var priceEl = document.getElementById('pricePerGram');
+  var priceOutEl = document.getElementById('priceOut');
+  var fetchBtn = document.getElementById('fetchRateBtn');
+  var rateStatusEl = document.getElementById('rateStatus');
+  var ratesPanelEl = document.getElementById('ratesPanel');
+  var ratesAsOfEl = document.getElementById('ratesAsOf');
+  var rOzEl = document.getElementById('rOz');
+  var rGram24El = document.getElementById('rGram24');
+  var r18El = document.getElementById('r18');
+  var r14El = document.getElementById('r14');
+  var rFxEl = document.getElementById('rFx');
+  var lastFetch = null;
+
+  METALS.forEach(function(m, i){
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = m.label;
+    metalEl.appendChild(opt);
+  });
+
+  function loadState(){
+    try{
+      var saved = JSON.parse(localStorage.getItem('mg-gold-calc') || '{}');
+      if (saved.metal !== undefined) metalEl.value = saved.metal;
+      if (saved.price !== undefined) priceEl.value = saved.price;
+    }catch(e){}
+  }
+  function saveState(){
+    try{
+      localStorage.setItem('mg-gold-calc', JSON.stringify({
+        metal: metalEl.value,
+        price: priceEl.value
+      }));
+    }catch(e){}
+  }
+
+  function fmt(n, decimals){
+    return n.toLocaleString('he-IL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+
+  function recalcWeight(){
+    var volume = parseFloat(volumeEl.value);
+    var sg = METALS[metalEl.value].sg;
+    if (!isNaN(volume) && volume > 0){
+      var grams = (sg * volume) / 1000;
+      gramsOutEl.innerHTML = fmt(grams, 2) + '<span class="unit">גרם</span>';
+      gramsEl.value = grams.toFixed(2);
+    } else {
+      gramsOutEl.innerHTML = '—<span class="unit">גרם</span>';
+      gramsEl.value = '';
+    }
+    recalcPrice();
+  }
+
+  function recalcPrice(){
+    var grams = parseFloat(gramsEl.value);
+    var price = parseFloat(priceEl.value);
+    if (!isNaN(grams) && grams > 0 && !isNaN(price) && price > 0){
+      priceOutEl.innerHTML = fmt(grams * price, 2) + '<span class="unit">₪</span>';
+    } else {
+      priceOutEl.innerHTML = '—<span class="unit">₪</span>';
+    }
+    saveState();
+  }
+
+  function applyLastFetchToPrice(){
+    if (!lastFetch) return;
+    var purity = METALS[metalEl.value].purity;
+    var pricePerGram = (lastFetch.usdPerOz / GRAMS_PER_TROY_OZ) * purity * lastFetch.usdIls;
+    priceEl.value = pricePerGram.toFixed(2);
+  }
+
+  function updateRatesPanel(usdPerOz, usdIls){
+    var gram24usd = usdPerOz / GRAMS_PER_TROY_OZ;
+    var gram18usd = gram24usd * 0.750;
+    var gram18ils = gram18usd * usdIls;
+    var gram14usd = gram24usd * 0.585;
+    var gram14ils = gram14usd * usdIls;
+
+    rOzEl.textContent = '$' + fmt(usdPerOz, 2);
+    rGram24El.textContent = '$' + fmt(gram24usd, 2);
+    r18El.textContent = '$' + fmt(gram18usd, 2) + ' / ₪' + fmt(gram18ils, 2);
+    r14El.textContent = '$' + fmt(gram14usd, 2) + ' / ₪' + fmt(gram14ils, 2);
+    rFxEl.textContent = fmt(usdIls, 4);
+    ratesPanelEl.hidden = false;
+  }
+
+  async function fetchLiveRate(){
+    fetchBtn.disabled = true;
+    fetchBtn.classList.add('loading');
+    rateStatusEl.classList.remove('error');
+    rateStatusEl.textContent = 'מושכת שער עדכני…';
+    var usdPerOz, usdIls;
+    try{
+      var goldRes = await fetch('https://api.gold-api.com/price/XAU');
+      if (!goldRes.ok) throw new Error('gold-api HTTP ' + goldRes.status);
+      var gold = await goldRes.json();
+      usdPerOz = gold && gold.price;
+      if (!usdPerOz) throw new Error('gold-api: no price field');
+    }catch(e){
+      rateStatusEl.classList.add('error');
+      rateStatusEl.textContent = 'שליפת מחיר הזהב נכשלה (' + e.message + ') - יש להזין ידנית';
+      fetchBtn.disabled = false;
+      fetchBtn.classList.remove('loading');
+      return;
+    }
+    try{
+      var fxRes = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (!fxRes.ok) throw new Error('er-api HTTP ' + fxRes.status);
+      var fx = await fxRes.json();
+      usdIls = fx && fx.rates && fx.rates.ILS;
+      if (!usdIls) throw new Error('er-api: no ILS field');
+    }catch(e){
+      rateStatusEl.classList.add('error');
+      rateStatusEl.textContent = 'שליפת שער דולר/שקל נכשלה (' + e.message + ') - יש להזין ידנית';
+      fetchBtn.disabled = false;
+      fetchBtn.classList.remove('loading');
+      return;
+    }
+
+    lastFetch = { usdPerOz: usdPerOz, usdIls: usdIls };
+    applyLastFetchToPrice();
+    recalcPrice();
+    updateRatesPanel(usdPerOz, usdIls);
+
+    function pad2(n){ return String(n).padStart(2, '0'); }
+    var now = new Date();
+    var dateStr = pad2(now.getDate()) + '/' + pad2(now.getMonth() + 1) + '/' + now.getFullYear();
+    var timeStr = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+    ratesAsOfEl.textContent = 'נכון לתאריך ' + dateStr + ', שעה ' + timeStr;
+    rateStatusEl.textContent = 'עודכן ' + timeStr + ' · זהב $' + usdPerOz.toFixed(2) + '/oz · $/₪ ' + usdIls.toFixed(4);
+
+    fetchBtn.disabled = false;
+    fetchBtn.classList.remove('loading');
+  }
+
+  volumeEl.addEventListener('input', recalcWeight);
+  metalEl.addEventListener('change', function(){
+    recalcWeight();
+    applyLastFetchToPrice();
+    recalcPrice();
+  });
+  gramsEl.addEventListener('input', recalcPrice);
+  priceEl.addEventListener('input', recalcPrice);
+  fetchBtn.addEventListener('click', fetchLiveRate);
+
+  loadState();
+  recalcWeight();
+})();
+</script>
